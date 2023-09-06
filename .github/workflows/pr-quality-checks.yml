@@ -1,0 +1,96 @@
+# Run a number of quality checks (linting, unit tests) ever time a PR is opened
+name: Pull Request Quality Checks
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Reason for manual trigger'
+        required: true
+        default: 'Re-run past failed build'
+
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ref: https://github.com/marketplace/actions/checkout
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # ref: https://github.com/marketplace/actions/setup-node-js-environment
+    - name: Install node (includes yarn)
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm ci
+      env:
+        CI: true
+
+    # we need to cache these dependencies so it can be used in the parallel jobs below
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ./*
+          ~/.npm
+        key: ${{ github.sha }}
+
+  linting:
+    name: Lint check
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      # restore dependencies that were installed in the `setup` job
+      - name: Restore dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./*
+            ~/.npm
+          key: ${{ github.sha }}
+
+      - name: linting
+        run: npx nx affected -t lint --parallel=3
+
+  unit-testing:
+    name: Unit testing
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      # restore dependencies that were installed in the `setup` job
+      - name: Restore dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./*
+            ~/.npm
+          key: ${{ github.sha }}
+
+      - name: Testing
+        run: npx nx affected -t test --parallel=3 --configuration=ci
+        env:
+          CI: true
+          NODE_ENV: test
+
+  build:
+    name: Perform dry-run deployment
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      # restore dependencies that were installed in the `setup` job
+      - name: Restore dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./*
+            ~/.npm
+          key: ${{ github.sha }}
+
+      - name: Perform dry-run
+        run: npx nx -t build --parallel=3
