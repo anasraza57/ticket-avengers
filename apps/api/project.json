@@ -18,6 +18,13 @@
         "command": "package"
       }
     },
+    "build": {
+      "executor": "@ns3/nx-serverless:sls",
+      "outputs": ["apps/api/.serverless", "dist/apps/api"],
+      "options": {
+        "command": "package"
+      }
+    },
     "deploy": {
       "executor": "@ns3/nx-serverless:sls",
       "outputs": ["apps/api/.serverless", "dist/apps/api"],

@@ -1,14 +1,15 @@
 {
   "name": "driven-app",
   "version": "0.0.0",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "engines": {
     "node": ">=18.17.0",
     "npm": ">=9.0.0"
   },
   "scripts": {
-    "dev-ui": "nx serve ui-web",
-    "dev-api": "nx serve api",
+    "dev:ui": "nx serve ui-web",
+    "dev:api": "nx serve api",
+    "dev": "nx run-many --target=serve --projects=ui-web,api --parallel",
     "build": "nx build",
     "test": "nx run-many -t test",
     "lint": "nx run-many -t lint"
