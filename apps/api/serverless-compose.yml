@@ -10,7 +10,6 @@ services:
   auth:
     path: src/services/Auth
     params:
-      restApiId: ${api-base.restApiId}
-      restApiRootResourceId: ${api-base.restApiRootResourceId}
+      restApiId: ${api-base.restApiId}      
     dependsOn:
       - api-base

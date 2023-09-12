@@ -17,7 +17,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@driven-app/shared-types/*": [
+        "libs/shared-types/*"
+      ]
+    }
   },
   "exclude": [
     "node_modules",

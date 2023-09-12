@@ -1,6 +1,6 @@
 import type { AWS } from '@serverless/typescript'
 
-export type ExtendedConfig = AWS & {}
+export type ExtendedConfig = AWS & object
 
 const commonConfig: AWS  = {
   service: '_common',
@@ -31,7 +31,7 @@ const commonConfig: AWS  = {
     endpointType: 'regional',
     apiGateway: {
       restApiId: '${param:restApiId}',
-      restApiRootResourceId: '${param:restApiRootResourceId}',
+      restApiRootResourceId: '--placeholder--',
     },
     stackName: 'restapi-${self:service}-${opt:stage, self:provider.stage}',
     profile: '964002935850_AdministratorAccess'

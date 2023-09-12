@@ -56,7 +56,7 @@ jobs:
           key: ${{ github.sha }}
 
       - name: linting
-        run: npx nx affected -t lint --parallel=3
+        run: npx nx run-many -t lint --parallel=3
 
   unit-testing:
     name: Unit testing
@@ -73,7 +73,7 @@ jobs:
           key: ${{ github.sha }}
 
       - name: Testing
-        run: npx nx affected -t test --parallel=3 --configuration=ci
+        run: npx nx run-many -t test --parallel=3 --configuration=ci
         env:
           CI: true
           NODE_ENV: test
@@ -93,4 +93,4 @@ jobs:
           key: ${{ github.sha }}
 
       - name: Perform dry-run
-        run: npx nx -t build --parallel=3
+        run: npx nx run-many -t build --parallel=3
