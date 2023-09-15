@@ -17,11 +17,8 @@ import {
 } from '@mui/material'
 import * as yup from 'yup'
 import axios from 'axios'
-import { RestApi } from 'libs/shared-types/api'
-import { SnackbarContext } from 'apps/ui-web/context/SnackbarContext'
-
-/* eslint-disable-next-line */
-export interface RegisterFormProps {}
+import { RestApi } from '@driven-app/shared-types/api'
+import { SnackbarContext } from '../../../context/SnackbarContext'
 
 const defaultValues = {
   firstName: '',
@@ -37,6 +34,7 @@ interface CustomProps {
 }
 
 const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function TextMaskCustom(props, ref: any) {
     const { onChange, name, ...other } = props
     return (
@@ -47,14 +45,16 @@ const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
           '#': /[1-9]/,
         }}
         inputRef={ref}
-        onAccept={(value: any) => onChange({ target: { name: name, value } })}
+        onAccept={(value: string) =>
+          onChange({ target: { name: name, value } })
+        }
         overwrite
       />
     )
   },
 )
 
-export function RegisterForm(props: RegisterFormProps) {
+export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState<boolean>(false)
   const { setSnackbar } = useContext(SnackbarContext)
@@ -72,7 +72,7 @@ export function RegisterForm(props: RegisterFormProps) {
     phone: yup
       .string()
       .required('Phone is required.')
-      .test('valid-phone', 'Invalid phone number.', (value: any) => {
+      .test('valid-phone', 'Invalid phone number.', (value: string) => {
         // Remove non-digit characters from the input
         const digitsOnly = value.replace(/\D/g, '')
 
@@ -235,6 +235,7 @@ export function RegisterForm(props: RegisterFormProps) {
                     id="phone-reg"
                     error={Boolean(errors.phone)}
                     placeholder="(XXX) XXX-XXXX"
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     inputComponent={TextMaskCustom as any}
                     startAdornment={
                       <InputAdornment position="start">+1</InputAdornment>
@@ -308,5 +309,3 @@ export function RegisterForm(props: RegisterFormProps) {
     </div>
   )
 }
-
-export default RegisterForm

@@ -15,20 +15,17 @@ import {
 } from '@mui/material'
 import * as yup from 'yup'
 import axios from 'axios'
-import { RestApi } from 'libs/shared-types/api'
-import { SnackbarContext } from 'apps/ui-web/context/SnackbarContext'
+import { RestApi } from '@driven-app/shared-types/api'
+import { SnackbarContext } from '../../../context/SnackbarContext'
 import styles from './login-form.module.css'
 import { useRouter } from 'next/navigation'
-
-/* eslint-disable-next-line */
-export interface LoginFormProps {}
 
 const defaultValues = {
   email: '',
   password: '',
 }
 
-export function LoginForm(props: LoginFormProps) {
+export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState<boolean>(false)
   const { setSnackbar } = useContext(SnackbarContext)
@@ -188,5 +185,3 @@ export function LoginForm(props: LoginFormProps) {
     </div>
   )
 }
-
-export default LoginForm
