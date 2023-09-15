@@ -2,7 +2,7 @@
 import { Button, Typography } from '@mui/material'
 import styles from './main-page.module.css'
 import Image from 'next/image'
-import SwipeableEdgeDrawer from '../swipeable-edge/swipeable-edge'
+import SwipeableEdgeDrawer from './swipeable-edge/swipeable-edge'
 import { useRouter } from 'next/navigation'
 import profileImage from '../../public/images/logo.png'
 
@@ -25,6 +25,7 @@ export default function MainPage() {
             size="large"
             variant="contained"
             fullWidth
+            onClick={() => router.push('/login')}
           >
             Log in
           </Button>

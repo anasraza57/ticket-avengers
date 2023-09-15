@@ -17,10 +17,11 @@ import {
 } from '@mui/material'
 import * as yup from 'yup'
 import axios from 'axios'
-import { RestApi } from '@driven-app/shared-types/api'
-import CustomSnackbar from '../custom-snackbar/custom-snackbar'
-import { SnackbarContext } from '../../context/SnackbarContext'
-import { AuthNavigationContext } from '../../context/AuthNavigationContext'
+import { RestApi } from 'libs/shared-types/api'
+import { SnackbarContext } from 'apps/ui-web/context/SnackbarContext'
+
+/* eslint-disable-next-line */
+export interface RegisterFormProps {}
 
 const defaultValues = {
   firstName: '',
@@ -36,7 +37,6 @@ interface CustomProps {
 }
 
 const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function TextMaskCustom(props, ref: any) {
     const { onChange, name, ...other } = props
     return (
@@ -47,19 +47,17 @@ const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
           '#': /[1-9]/,
         }}
         inputRef={ref}
-        onAccept={(value: string) =>
-          onChange({ target: { name: name, value } })
-        }
+        onAccept={(value: any) => onChange({ target: { name: name, value } })}
         overwrite
       />
     )
   },
 )
 
-export default function RegisterForm() {
+export function RegisterForm(props: RegisterFormProps) {
   const [showPassword, setShowPassword] = useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
   const { setSnackbar } = useContext(SnackbarContext)
-  const { handleNext } = useContext(AuthNavigationContext)
 
   const schema = yup.object().shape({
     firstName: yup.string().required('First Name is required.'),
@@ -74,7 +72,7 @@ export default function RegisterForm() {
     phone: yup
       .string()
       .required('Phone is required.')
-      .test('valid-phone', 'Invalid phone number.', (value: string) => {
+      .test('valid-phone', 'Invalid phone number.', (value: any) => {
         // Remove non-digit characters from the input
         const digitsOnly = value.replace(/\D/g, '')
 
@@ -104,6 +102,7 @@ export default function RegisterForm() {
   const onSubmit = async (data: RestApi.User.CreateRequest) => {
     data['phone'] = '+1' + data['phone'].replace(/\D/g, '')
     console.log('data >> ', data)
+    setLoading(true)
 
     axios
       .post(
@@ -123,7 +122,6 @@ export default function RegisterForm() {
           severity: 'success',
           message: 'You have successfully registered!',
         })
-        handleNext()
       })
       .catch((error) => {
         setSnackbar({
@@ -133,12 +131,14 @@ export default function RegisterForm() {
         })
         console.log(error.response.data.message)
       })
-      .finally(() => reset())
+      .finally(() => {
+        reset()
+        setLoading(false)
+      })
   }
 
   return (
     <div className={styles['container']}>
-      <CustomSnackbar />
       <form noValidate autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
@@ -235,7 +235,6 @@ export default function RegisterForm() {
                     id="phone-reg"
                     error={Boolean(errors.phone)}
                     placeholder="(XXX) XXX-XXXX"
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     inputComponent={TextMaskCustom as any}
                     startAdornment={
                       <InputAdornment position="start">+1</InputAdornment>
@@ -299,7 +298,7 @@ export default function RegisterForm() {
               type="submit"
               variant="contained"
               sx={{ mb: 2 }}
-              // disabled={loading}
+              disabled={loading}
             >
               Create account
             </Button>
@@ -309,3 +308,5 @@ export default function RegisterForm() {
     </div>
   )
 }
+
+export default RegisterForm

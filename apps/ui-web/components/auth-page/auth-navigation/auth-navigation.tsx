@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles'
 import styles from './auth-navigation.module.css'
 import { Close, KeyboardArrowLeft } from '@mui/icons-material'
 import { MobileStepper, Button } from '@mui/material'
-import { AuthNavigationContext } from '../../context/AuthNavigationContext'
+import { AuthNavigationContext } from '../../../context/AuthNavigationContext'
 
 export default function AuthNavigation() {
   const router = useRouter()
@@ -16,7 +16,7 @@ export default function AuthNavigation() {
     <div className={styles.headerNavigation}>
       <MobileStepper
         variant="dots"
-        steps={3}
+        steps={2}
         position="static"
         activeStep={activeStep}
         nextButton={
