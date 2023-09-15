@@ -1,7 +1,6 @@
 'use client'
-import { Typography, Divider, Button } from '@mui/material'
+import { Typography, Divider } from '@mui/material'
 import Link from 'next/link'
-import Image from 'next/image'
 import AuthNavigation from './auth-navigation/auth-navigation'
 import styles from './auth-page.module.css'
 import RegisterForm from './register-form/register-form'
@@ -9,13 +8,13 @@ import LoginForm from './login-form/login-form'
 import { useContext, useEffect } from 'react'
 import { AuthNavigationContext } from '../../context/AuthNavigationContext'
 import CustomSnackbar from '../custom-snackbar/custom-snackbar'
+import AuthButton from './auth-button/auth-button'
 
-/* eslint-disable-next-line */
 export interface AuthPageProps {
   isRegister: boolean
 }
 
-export function AuthPage({ isRegister }: AuthPageProps) {
+export default function AuthPage({ isRegister }: AuthPageProps) {
   const { activeStep, setActiveStep } = useContext(AuthNavigationContext)
 
   useEffect(() => {
@@ -54,40 +53,8 @@ export function AuthPage({ isRegister }: AuthPageProps) {
           {isRegister || activeStep === 0 ? <RegisterForm /> : <LoginForm />}
 
           <Divider sx={{ fontSize: 12 }}>OR</Divider>
-          <Button
-            sx={{ mt: 2 }}
-            fullWidth
-            color="inherit"
-            size="large"
-            variant="contained"
-            startIcon={
-              <Image
-                src="/icons/apple-icon.svg"
-                alt="google"
-                height={20}
-                width={20}
-              ></Image>
-            }
-          >
-            Continue with Apple
-          </Button>
-          <Button
-            sx={{ mt: 2 }}
-            fullWidth
-            color="inherit"
-            size="large"
-            variant="contained"
-            startIcon={
-              <Image
-                src="/icons/google-icon.svg"
-                alt="google"
-                height={20}
-                width={20}
-              ></Image>
-            }
-          >
-            Continue with Google
-          </Button>
+          <AuthButton isGoogle={false} />
+          <AuthButton isGoogle />
           {(isRegister || activeStep === 0) && (
             <Typography sx={{ fontSize: 12, mt: 2 }}>
               By creating an account, you agree to the <br />
@@ -100,5 +67,3 @@ export function AuthPage({ isRegister }: AuthPageProps) {
     </div>
   )
 }
-
-export default AuthPage

@@ -15,6 +15,7 @@ export default function AuthNavigation() {
   return (
     <div className={styles.headerNavigation}>
       <MobileStepper
+        className="stepper"
         variant="dots"
         steps={2}
         position="static"

@@ -1,5 +1,5 @@
 import AuthPage from '../../components/auth-page/auth-page'
 
-export function Register() {
+export default function Register() {
   return <AuthPage isRegister />
 }

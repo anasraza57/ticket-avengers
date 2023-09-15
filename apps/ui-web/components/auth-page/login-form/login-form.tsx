@@ -14,7 +14,7 @@ import {
   Grid,
 } from '@mui/material'
 import * as yup from 'yup'
-import axios from 'axios'
+import axiosInstance from '../../../utils/axiosConfig'
 import { RestApi } from '@driven-app/shared-types/api'
 import { SnackbarContext } from '../../../context/SnackbarContext'
 import styles from './login-form.module.css'
@@ -63,18 +63,9 @@ export default function LoginForm() {
     console.log('data >> ', data)
     setLoading(true)
 
-    axios
-      .post(
-        'https://j1mmfot0ad.execute-api.us-east-1.amazonaws.com/users/login',
-        data,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      )
+    axiosInstance
+      .post('/users/login', data)
       .then((res) => {
-        console.log('response > ', res)
         console.log('response data > ', res.data)
         setSnackbar({
           open: true,

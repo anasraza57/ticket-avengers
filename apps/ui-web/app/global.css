@@ -90,6 +90,10 @@ pre {
 .rounded {
   border-radius: 1.5rem;
 }
+.stepper .MuiButton-root {
+  min-width: unset;
+  padding: 0;
+}
 .wrapper {
   width: 100%;
   display: flex;
