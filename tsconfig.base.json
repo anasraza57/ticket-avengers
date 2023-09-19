@@ -18,6 +18,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@driven-app/aws-clients/*": [
+        "libs/aws-clients/src/*"
+      ],
       "@driven-app/shared-types/*": [
         "libs/shared-types/*"
       ]

@@ -18,6 +18,7 @@ const commonConfig: AWS  = {
 
   plugins: [
     'serverless-offline',
+    'serverless-iam-roles-per-function',
     // 'serverless-iamroles',
     'serverless-esbuild',
   ],
@@ -29,9 +30,9 @@ const commonConfig: AWS  = {
     versionFunctions: false,
     deploymentMethod: 'direct',
     endpointType: 'regional',
-    apiGateway: {
-      restApiId: '${param:restApiId}',
-      restApiRootResourceId: '--placeholder--',
+    httpApi: {
+      payload: '2.0',
+      id: '${param:restApiId}'
     },
     stackName: 'restapi-${self:service}-${opt:stage, self:provider.stage}',
     profile: '964002935850_AdministratorAccess'

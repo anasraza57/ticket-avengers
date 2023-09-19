@@ -7,5 +7,7 @@ export default {
     '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
+  coveragePathIgnorePatterns: ['serverless.ts', 'serverless.base.ts'],
   coverageDirectory: '../../coverage/apps/api',
+  collectCoverageFrom: ['src/**/*.ts']
 };

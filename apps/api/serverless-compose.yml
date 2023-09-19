@@ -7,9 +7,10 @@ services:
   api-base:
     path: src/services/BaseApiGateway
 
-  auth:
-    path: src/services/Auth
+  user:
+    path: src/services/User
     params:
-      restApiId: ${api-base.restApiId}      
+      restApiId: ${api-base.restApiId}
+      restApiCookieAuthorizerId: ${api-base.restApiCookieAuthorizerId}
     dependsOn:
       - api-base

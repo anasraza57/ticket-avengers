@@ -12,23 +12,36 @@
     },
     "package": {
       "executor": "@ns3/nx-serverless:sls",
-      "outputs": ["apps/api/.serverless", "dist/apps/api"],
-      "dependsOn": ["^build"],
+      "outputs": [
+        "{projectRoot}/.serverless",
+        "{workspaceRoot}/dist/apps/api"
+      ],
+      "dependsOn": [
+        "^build"
+      ],
       "options": {
         "command": "package"
       }
     },
     "build": {
       "executor": "@ns3/nx-serverless:sls",
-      "outputs": ["apps/api/.serverless", "dist/apps/api"],
+      "outputs": [
+        "{projectRoot}/.serverless",
+        "{workspaceRoot}/dist/apps/api"
+      ],
       "options": {
         "command": "package"
       }
     },
     "deploy": {
       "executor": "@ns3/nx-serverless:sls",
-      "outputs": ["apps/api/.serverless", "dist/apps/api"],
-      "dependsOn": ["package"],
+      "outputs": [
+        "{projectRoot}/.serverless",
+        "{workspaceRoot}/dist/apps/api"
+      ],
+      "dependsOn": [
+        "package"
+      ],
       "options": {
         "command": "deploy",
         "package": ".serverless"
@@ -46,10 +59,13 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "apps/api/jest.config.ts",
-        "passWithNoTests": true
+        "passWithNoTests": true,
+        "codeCoverage": true
       },
       "configurations": {
         "ci": {
@@ -60,9 +76,13 @@
     },
     "lint": {
       "executor": "@nx/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/api/src/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "apps/api/src/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     }
   },
