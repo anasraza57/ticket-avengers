@@ -26,10 +26,11 @@ const defaultValues = {
 }
 
 export default function LoginForm() {
+  const router = useRouter()
+  const { setSnackbar } = useContext(SnackbarContext)
+
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const { setSnackbar } = useContext(SnackbarContext)
-  const router = useRouter()
 
   const schema = yup.object().shape({
     email: yup
@@ -63,29 +64,30 @@ export default function LoginForm() {
     console.log('data >> ', data)
     setLoading(true)
 
-    axiosInstance
-      .post('/users/login', data)
-      .then((res) => {
-        console.log('response data > ', res.data)
-        setSnackbar({
-          open: true,
-          severity: 'success',
-          message: 'You have successfully logged in!',
-        })
-        router.replace('/')
+    try {
+      const res = await axiosInstance.post('/users/login', data)
+      console.log('response data > ', res.data)
+
+      router.replace('/')
+
+      setSnackbar({
+        open: true,
+        severity: 'success',
+        message: 'You have successfully logged in!',
       })
-      .catch((error) => {
-        setSnackbar({
-          open: true,
-          severity: 'error',
-          message: error.response.data.message,
-        })
-        console.log(error.response.data.message)
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setSnackbar({
+        open: true,
+        severity: 'error',
+        message: error.response.data.message,
       })
-      .finally(() => {
-        reset()
-        setLoading(false)
-      })
+      console.log(error.response.data.message)
+    } finally {
+      reset()
+      setLoading(false)
+    }
   }
 
   return (

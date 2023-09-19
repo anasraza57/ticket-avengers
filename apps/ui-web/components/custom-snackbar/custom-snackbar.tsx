@@ -1,3 +1,4 @@
+'use client'
 import { Dispatch, SetStateAction, forwardRef, useContext } from 'react'
 import Snackbar from '@mui/material/Snackbar'
 import MuiAlert, { AlertColor, AlertProps } from '@mui/material/Alert'
@@ -39,7 +40,7 @@ export default function CustomSnackbar() {
   return (
     <Snackbar
       open={snackbar?.open}
-      autoHideDuration={6000}
+      autoHideDuration={2000}
       onClose={handleClose}
     >
       <Alert

@@ -19,6 +19,7 @@ import * as yup from 'yup'
 import axiosInstance from '../../../utils/axiosConfig'
 import { RestApi } from '@driven-app/shared-types/api'
 import { SnackbarContext } from '../../../context/SnackbarContext'
+import { useRouter } from 'next/navigation'
 
 const defaultValues = {
   firstName: '',
@@ -55,9 +56,11 @@ const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
 )
 
 export default function RegisterForm() {
+  const router = useRouter()
+  const { setSnackbar } = useContext(SnackbarContext)
+
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const { setSnackbar } = useContext(SnackbarContext)
 
   const schema = yup.object().shape({
     firstName: yup.string().required('First Name is required.'),
@@ -104,28 +107,30 @@ export default function RegisterForm() {
     console.log('data >> ', data)
     setLoading(true)
 
-    axiosInstance
-      .post('/users', data)
-      .then((res) => {
-        console.log('response data > ', res.data)
-        setSnackbar({
-          open: true,
-          severity: 'success',
-          message: 'You have successfully registered!',
-        })
+    try {
+      const res = await axiosInstance.post('/users', data)
+      console.log('response data > ', res.data)
+
+      router.replace('/login')
+
+      setSnackbar({
+        open: true,
+        severity: 'success',
+        message: 'You have successfully registered!',
       })
-      .catch((error) => {
-        setSnackbar({
-          open: true,
-          severity: 'error',
-          message: error.response.data.message,
-        })
-        console.log(error.response.data.message)
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setSnackbar({
+        open: true,
+        severity: 'error',
+        message: error.response.data.message,
       })
-      .finally(() => {
-        reset()
-        setLoading(false)
-      })
+      console.log(error.response.data.message)
+    } finally {
+      reset()
+      setLoading(false)
+    }
   }
 
   return (

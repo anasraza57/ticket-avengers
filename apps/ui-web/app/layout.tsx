@@ -4,6 +4,7 @@ import { theme } from '../utils/theme'
 import { EmotionCacheProvider } from '../context/EmotionCacheContext'
 import { SnackbarProvider } from '../context/SnackbarContext'
 import { AuthNavigationProvider } from '../context/AuthNavigationContext'
+import CustomSnackbar from '../components/custom-snackbar/custom-snackbar'
 
 export const metadata = {
   title: 'Ticket Avengers',
@@ -21,6 +22,7 @@ export default function RootLayout({
         <EmotionCacheProvider>
           <ThemeProvider theme={theme}>
             <SnackbarProvider>
+              <CustomSnackbar />
               <AuthNavigationProvider>{children}</AuthNavigationProvider>
             </SnackbarProvider>
           </ThemeProvider>

@@ -7,7 +7,6 @@ import RegisterForm from './register-form/register-form'
 import LoginForm from './login-form/login-form'
 import { useContext, useEffect } from 'react'
 import { AuthNavigationContext } from '../../context/AuthNavigationContext'
-import CustomSnackbar from '../custom-snackbar/custom-snackbar'
 import AuthButton from './auth-button/auth-button'
 
 export interface AuthPageProps {
@@ -26,7 +25,6 @@ export default function AuthPage({ isRegister }: AuthPageProps) {
 
   return (
     <div className={styles.page}>
-      <CustomSnackbar />
       <div className="wrapper">
         <div className={`container ${styles.container}`}>
           <AuthNavigation />

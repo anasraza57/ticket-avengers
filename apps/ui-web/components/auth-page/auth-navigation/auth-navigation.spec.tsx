@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react'
 
 import AuthNavigation from './auth-navigation'
+
 jest.mock('next/navigation')
 
 describe('AuthNavigation', () => {

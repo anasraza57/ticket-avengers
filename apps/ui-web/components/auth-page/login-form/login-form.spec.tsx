@@ -1,12 +1,12 @@
-import { render } from '@testing-library/react';
+import { render } from '@testing-library/react'
 
-import LoginForm from './login-form';
+import LoginForm from './login-form'
+
+jest.mock('next/navigation')
 
 describe('LoginForm', () => {
-  
   it('should render successfully', () => {
-    const { baseElement } = render(<LoginForm />);
-    expect(baseElement).toBeTruthy();
-  });
-  
-});
+    const { baseElement } = render(<LoginForm />)
+    expect(baseElement).toBeTruthy()
+  })
+})
