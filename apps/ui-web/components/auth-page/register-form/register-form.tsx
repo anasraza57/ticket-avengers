@@ -16,10 +16,8 @@ import {
   Grid,
 } from '@mui/material'
 import * as yup from 'yup'
-import axiosInstance from '../../../utils/axiosConfig'
 import { RestApi } from '@driven-app/shared-types/api'
-import { SnackbarContext } from '../../../context/SnackbarContext'
-import { useRouter } from 'next/navigation'
+import { AuthContext } from '../../../context/AuthContext'
 
 const defaultValues = {
   firstName: '',
@@ -56,8 +54,7 @@ const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
 )
 
 export default function RegisterForm() {
-  const router = useRouter()
-  const { setSnackbar } = useContext(SnackbarContext)
+  const { register } = useContext(AuthContext)
 
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState<boolean>(false)
@@ -106,31 +103,9 @@ export default function RegisterForm() {
     data['phone'] = '+1' + data['phone'].replace(/\D/g, '')
     console.log('data >> ', data)
     setLoading(true)
-
-    try {
-      const res = await axiosInstance.post('/users', data)
-      console.log('response data > ', res.data)
-
-      router.replace('/login')
-
-      setSnackbar({
-        open: true,
-        severity: 'success',
-        message: 'You have successfully registered!',
-      })
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      setSnackbar({
-        open: true,
-        severity: 'error',
-        message: error.response.data.message,
-      })
-      console.log(error.response.data.message)
-    } finally {
-      reset()
-      setLoading(false)
-    }
+    await register(data)
+    reset()
+    setLoading(false)
   }
 
   return (
