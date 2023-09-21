@@ -1,4 +1,4 @@
-import type { ErrorCode } from '../environments/errorCodes'
+import type { ErrorCode } from '../configuration/errorCodes'
 
 /**
  * Handles thrown errors and returns an appropriate response or rethrows the error.

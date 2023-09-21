@@ -5,7 +5,7 @@ This is a monorepo that holds all things related to the Driven app (API, web UI,
 - [Nx](https://nx.dev/) for monorepo managment and build caching
 - [NodeJS](https://nodejs.org) as the runtime for the API and local build tools
 - [Typescript](https://www.typescriptlang.org/) everywhere, for type safety and general code confidence
-- [Serverless framework](https://www.serverless.com/) + [Serverless Compose](https://www.serverless.com/blog/serverless-framework-compose-multi-service-deployments) to manage infrastructure and API 
+- [SST](https://docs.sst.dev/what-is-sst): to manage infrastructure and API routes
 - [NextJS](https://nextjs.org/) (which is based on React) as the UI framework of choice
 
 ## Getting started
@@ -28,4 +28,5 @@ For detials, you can check out [the Nx documentation](https://nx.dev/concepts/mo
 - `.github`: Contains all github related files (workflows, issue templates, etc)
 - `apps`: Contains all "applications" such as the API, UI, mobile, etc. Each "app" will also have its own README file with details specific to that app.
 - `libs`: Contains all shared code that can be used by any of the apps (such as shared types, utils, etc)
+- `infrastucture`: Contains all infrastructure-as-code items, 
 - `nx.json`: The main [configuration file for Nx](https://nx.dev/concepts/types-of-configuration)

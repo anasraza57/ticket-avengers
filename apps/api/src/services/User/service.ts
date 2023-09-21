@@ -1,8 +1,8 @@
 import * as DAL from './dataAccess'
 import { CognitoClient, AdminInitiateAuthCommand } from '@driven-app/aws-clients/Cognito'
-import { environment } from '../../environments/environment'
+import { environment } from '../../configuration/environment'
 import { parsePhoneNumber } from 'awesome-phonenumber'
-import errorCodes from '../../environments/errorCodes'
+import errorCodes from '../../configuration/errorCodes'
 import * as emailValidator from 'email-validator'
 
 type GenerateAuthTokens = {

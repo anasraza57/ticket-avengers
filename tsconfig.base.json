@@ -18,6 +18,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@driven-app/infrastructure/*": [
+        "infrastructure/*"
+      ],
       "@driven-app/aws-clients/*": [
         "libs/aws-clients/src/*"
       ],

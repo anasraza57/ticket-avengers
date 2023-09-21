@@ -4,59 +4,6 @@
   "projectType": "application",
   "sourceRoot": "apps/api/src",
   "targets": {
-    "serve": {
-      "executor": "@ns3/nx-serverless:sls",
-      "options": {
-        "command": "offline"
-      }
-    },
-    "package": {
-      "executor": "@ns3/nx-serverless:sls",
-      "outputs": [
-        "{projectRoot}/.serverless",
-        "{workspaceRoot}/dist/apps/api"
-      ],
-      "dependsOn": [
-        "^build"
-      ],
-      "options": {
-        "command": "package"
-      }
-    },
-    "build": {
-      "executor": "@ns3/nx-serverless:sls",
-      "outputs": [
-        "{projectRoot}/.serverless",
-        "{workspaceRoot}/dist/apps/api"
-      ],
-      "options": {
-        "command": "package"
-      }
-    },
-    "deploy": {
-      "executor": "@ns3/nx-serverless:sls",
-      "outputs": [
-        "{projectRoot}/.serverless",
-        "{workspaceRoot}/dist/apps/api"
-      ],
-      "dependsOn": [
-        "package"
-      ],
-      "options": {
-        "command": "deploy",
-        "package": ".serverless"
-      }
-    },
-    "remove": {
-      "executor": "@ns3/nx-serverless:sls",
-      "options": {
-        "command": "remove"
-      }
-    },
-    "sls": {
-      "executor": "@ns3/nx-serverless:sls",
-      "options": {}
-    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": [
@@ -70,7 +17,7 @@
       "configurations": {
         "ci": {
           "ci": true,
-          "codeCoverage": true
+          "codeCoverage": false
         }
       }
     },

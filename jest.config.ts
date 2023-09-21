@@ -1,6 +1,9 @@
-import { getJestProjects } from '@nx/jest';
+import { getJestProjects } from '@nx/jest'
+import type {Config} from 'jest'
 
-export default {
+const config: Config = {
   projects: getJestProjects(),
-  setupFilesAfterEnv: ["<rootDir>/jest.preload.js"],
-};
+  setupFilesAfterEnv: ['./jest.preload.js'],
+}
+
+export default config

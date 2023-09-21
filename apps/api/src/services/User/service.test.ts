@@ -1,5 +1,5 @@
 import { generateAuthTokens, createUser } from './service'
-import ErrorCodes from '../../environments/errorCodes'
+import ErrorCodes from '../../configuration/errorCodes'
 import * as DAL from './dataAccess'
 
 // Mock the DAL functions

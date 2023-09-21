@@ -9,8 +9,8 @@ import {
  } from '@driven-app/aws-clients/Cognito'
 import { camelCase } from 'lodash-es'
 import { v4 as uuid } from 'uuid'
-import { environment } from '../../environments/environment'
-import errorCodes from '../../environments/errorCodes'
+import { environment } from '../../configuration/environment'
+import errorCodes from '../../configuration/errorCodes'
 
 const DYNAMODB_TABLE_NAME = 'Users'
 const ID_PREFIX = camelCase(DYNAMODB_TABLE_NAME)
@@ -46,7 +46,6 @@ type UpdateInput = {
  * @throws Throws an error if there is a duplicate email or phone number.
  */
 export async function create(input: CreateInput) {
-
     const defaultValues = {
         isActive: true,
         groups: []
