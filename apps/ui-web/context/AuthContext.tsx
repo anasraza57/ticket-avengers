@@ -127,7 +127,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSnackbar({
         open: true,
         severity: 'error',
-        message: error.response.data.message,
+        message: 'Invalid email or password.',
       })
     }
   }

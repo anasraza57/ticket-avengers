@@ -62,5 +62,14 @@ export const theme = createTheme({
         },
       },
     },
+    MuiIcon: {
+      styleOverrides: {
+        root: ({ ownerState }) => ({
+          ...(ownerState.color === 'inherit' && {
+            color: '#c7c7cc',
+          }),
+        }),
+      },
+    },
   },
 })

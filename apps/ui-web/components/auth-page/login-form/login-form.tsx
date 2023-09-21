@@ -17,6 +17,7 @@ import * as yup from 'yup'
 import { RestApi } from '@driven-app/shared-types/api'
 import styles from './login-form.module.css'
 import { AuthContext } from '../../../context/AuthContext'
+import { Visibility, VisibilityOff } from '@mui/icons-material'
 
 const defaultValues = {
   email: '',
@@ -37,13 +38,7 @@ export default function LoginForm() {
         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
         'Invalid email format.',
       ),
-    password: yup
-      .string()
-      .required('Password is required.')
-      .matches(
-        /^(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
-        'Password must be at least 8 characters and contain at least 1 digit and 1 special character.',
-      ),
+    password: yup.string().required('Password is required.'),
   })
 
   const {
@@ -122,7 +117,13 @@ export default function LoginForm() {
                           edge="end"
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={() => setShowPassword(!showPassword)}
-                        ></IconButton>
+                        >
+                          {showPassword ? (
+                            <VisibilityOff color="inherit" />
+                          ) : (
+                            <Visibility color="inherit" />
+                          )}
+                        </IconButton>
                       </InputAdornment>
                     }
                   />

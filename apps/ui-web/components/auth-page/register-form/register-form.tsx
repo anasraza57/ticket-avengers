@@ -18,6 +18,7 @@ import {
 import * as yup from 'yup'
 import { RestApi } from '@driven-app/shared-types/api'
 import { AuthContext } from '../../../context/AuthContext'
+import { VisibilityOff, Visibility } from '@mui/icons-material'
 
 const defaultValues = {
   firstName: '',
@@ -249,7 +250,13 @@ export default function RegisterForm() {
                           edge="end"
                           onMouseDown={(e) => e.preventDefault()}
                           onClick={() => setShowPassword(!showPassword)}
-                        ></IconButton>
+                        >
+                          {showPassword ? (
+                            <VisibilityOff color="inherit" />
+                          ) : (
+                            <Visibility color="inherit" />
+                          )}
+                        </IconButton>
                       </InputAdornment>
                     }
                   />
