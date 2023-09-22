@@ -1,8 +1,10 @@
 import axios from 'axios'
 
+const baseURL = process.env['NEXT_PUBLIC_API_BASE_URL']
+
 // Create an Axios instance with default configuration
 const instance = axios.create({
-  baseURL: 'https://j1mmfot0ad.execute-api.us-east-1.amazonaws.com',
+  baseURL,
   headers: {
     'Content-Type': 'application/json', // Set the default content-type header
   },
