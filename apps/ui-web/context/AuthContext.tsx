@@ -37,8 +37,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [expirationTime, setExpirationTime] = useState<number | null>(
-    sessionStorage.getItem('expirationTime')
-      ? Number(sessionStorage.getItem('expirationTime'))
+    typeof window !== 'undefined'
+      ? sessionStorage.getItem('expirationTime')
+        ? Number(sessionStorage.getItem('expirationTime'))
+        : null
       : null,
   )
 
