@@ -8,10 +8,7 @@ export function WebUi({ stack }: StackContext) {
 
   const { api } = use(API)
   
-
-  // const domain = CDK.Fn.parseDomainName( CDK.Fn.importValue('RestApiUrl'))
   const domain = CDK.Fn.parseDomainName(api.url)
-
   const site = new StaticSite(stack, 'WebUi', {
     // path: 'apps/ui-web/dist',
     buildCommand: 'nx build ui-web',

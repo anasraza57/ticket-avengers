@@ -45,13 +45,6 @@ export function API({ stack }: StackContext) {
         }
     })
 
-    stack.addOutputs({
-        RestApiUrl: {
-            value: api.url,
-            exportName: 'RestApiUrl'
-        }
-    })
-
     return {
         api
     }
