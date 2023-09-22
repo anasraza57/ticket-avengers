@@ -4,6 +4,7 @@ import styles from './main-page.module.css'
 import Image from 'next/image'
 import SwipeableEdgeDrawer from '../swipeable-edge/swipeable-edge'
 import { useRouter } from 'next/navigation'
+import profileImage from '../../public/images/logo.png'
 
 export default function MainPage() {
   const router = useRouter()
@@ -12,7 +13,7 @@ export default function MainPage() {
     <div className={styles.page}>
       <div className={`wrapper ${styles.wrapper}`}>
         <div className="container">
-          <Image src="/images/logo.png" width={286} height={286} alt="Logo" />
+          <Image src={profileImage} width={286} height={286} alt="Logo" />
           <Typography variant="inherit">
             Can&apos;t handle another fine?
           </Typography>
