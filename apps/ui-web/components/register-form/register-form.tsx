@@ -17,7 +17,7 @@ import {
 } from '@mui/material'
 import * as yup from 'yup'
 import { RestApi } from '@driven-app/shared-types/api'
-import { AuthContext } from '../../../context/AuthContext'
+import { AuthContext } from '../../context/AuthContext'
 import { VisibilityOff, Visibility } from '@mui/icons-material'
 
 const defaultValues = {
@@ -104,8 +104,7 @@ export default function RegisterForm() {
     data['phone'] = '+1' + data['phone'].replace(/\D/g, '')
     console.log('data >> ', data)
     setLoading(true)
-    await register(data)
-    reset()
+    await register(data, reset)
     setLoading(false)
   }
 

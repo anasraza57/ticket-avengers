@@ -16,7 +16,7 @@ import {
 import * as yup from 'yup'
 import { RestApi } from '@driven-app/shared-types/api'
 import styles from './login-form.module.css'
-import { AuthContext } from '../../../context/AuthContext'
+import { AuthContext } from '../../context/AuthContext'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 
 const defaultValues = {
@@ -31,13 +31,7 @@ export default function LoginForm() {
   const [loading, setLoading] = useState<boolean>(false)
 
   const schema = yup.object().shape({
-    email: yup
-      .string()
-      .required('Email is required.')
-      .matches(
-        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-        'Invalid email format.',
-      ),
+    email: yup.string().required('Email or Phone number is required.'),
     password: yup.string().required('Password is required.'),
   })
 
@@ -55,8 +49,7 @@ export default function LoginForm() {
   const onSubmit = async (data: RestApi.User.LoginRequest) => {
     console.log('data >> ', data)
     setLoading(true)
-    await login(data)
-    reset()
+    await login(data, reset)
     setLoading(false)
   }
 
@@ -73,12 +66,10 @@ export default function LoginForm() {
                 render={({ field: { value, onChange, onBlur } }) => (
                   <TextField
                     value={value}
-                    label="Email"
-                    type={'email'}
+                    label="Email or Phone number"
                     onBlur={onBlur}
                     onChange={onChange}
                     error={Boolean(errors.email)}
-                    placeholder="john@example.com"
                   />
                 )}
               />

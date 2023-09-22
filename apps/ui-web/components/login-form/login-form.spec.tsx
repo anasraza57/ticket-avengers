@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react'
 
-import Dashboard from './dashboard'
+import LoginForm from './login-form'
 
-describe('Dashboard', () => {
+describe('LoginForm', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<Dashboard />)
+    const { baseElement } = render(<LoginForm />)
     expect(baseElement).toBeTruthy()
   })
 })

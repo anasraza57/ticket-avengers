@@ -1,6 +1,6 @@
-import styles from './dashboard.module.css'
+import styles from './page.module.css'
 
-export default function Dashboard() {
+export function Dashboard() {
   return (
     <div className={styles.page}>
       <div className={`wrapper ${styles.wrapper}`}>
@@ -11,3 +11,5 @@ export default function Dashboard() {
     </div>
   )
 }
+
+export default Dashboard
