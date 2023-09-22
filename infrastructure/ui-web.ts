@@ -1,12 +1,16 @@
-import { StaticSite, StackContext } from 'sst/constructs';
-
+import { StaticSite, StackContext, use } from 'sst/constructs';
 import CloudFrontOrigin from 'aws-cdk-lib/aws-cloudfront-origins'
 import CloudFront from 'aws-cdk-lib/aws-cloudfront'
 import * as CDK from 'aws-cdk-lib'
+import { API } from './api-gateway'
 
 export function WebUi({ stack }: StackContext) {
 
-  const domain = CDK.Fn.parseDomainName( CDK.Fn.importValue('RestApiUrl'))
+  const { api } = use(API)
+  
+
+  // const domain = CDK.Fn.parseDomainName( CDK.Fn.importValue('RestApiUrl'))
+  const domain = CDK.Fn.parseDomainName(api.url)
 
   const site = new StaticSite(stack, 'WebUi', {
     // path: 'apps/ui-web/dist',
