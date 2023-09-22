@@ -53,4 +53,4 @@ jobs:
 
     # ref: https://github.com/marketplace/actions/serverless
     - name: Deploy to environment
-      run: sst deploy --stage prod
+      run: npm ru sst:deploy -- --stage ${{ inputs.env_name }}

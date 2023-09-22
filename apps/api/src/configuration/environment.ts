@@ -5,8 +5,11 @@ export const environment = {
   production: IS_PRODUCTION,
   offline: IS_OFFLINE,
   cognito: {
-    userPoolId: process.env['cognitoUserPoolId'],
-    userPoolArn: process.env['cognitoUserPoolArn'],
-    userPoolClientId: process.env['cognitoUserPoolClientId']
+    userPoolId: process.env['cognitoUserPoolId'] as string,
+    userPoolArn: process.env['cognitoUserPoolArn'] as string,
+    userPoolClientId: process.env['cognitoUserPoolClientId'] as string
+  },
+  dynamodb: {
+    tableNamePrefix: process.env['dynamodbTableNamePrefix'] as string
   },
 };

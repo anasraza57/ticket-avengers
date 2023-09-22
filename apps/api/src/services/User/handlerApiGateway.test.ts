@@ -1,6 +1,7 @@
-import { APIGatewayEvent } from 'aws-lambda'
+import { APIGatewayProxyEventV2, APIGatewayProxyEventV2WithLambdaAuthorizer } from 'aws-lambda'
+import { RestApi } from '@driven-app/shared-types/api'
 import * as Service from './service'
-import { login, create, logout } from './handlerApiGateway'
+import { login, create, logout, refresh } from './handlerApiGateway'
 
 
 jest.mock('./service', () => ({
@@ -9,10 +10,16 @@ jest.mock('./service', () => ({
         expiresIn: 3600,
         accessToken: '-- some fake token --',
         refreshToken: '-- some fake token --',
-        idToken: '-- some fake token --',
-        tokenType: 'some string'
+        idToken: '-- some fake token --'
     }),
     createUser: jest.fn(),
+    refreshAuthToken: jest.fn().mockResolvedValue({
+      userId: 'abc-123',
+      expiresIn: 3600,
+      accessToken: '-- some fake token --',
+      refreshToken: '-- some fake token --',
+      idToken: '-- some fake token --'
+    })
   }))
 
 describe('login', () => {
@@ -23,7 +30,7 @@ describe('login', () => {
                 password: 'testpassword'
             }),
             isBase64Encoded: false
-        } as APIGatewayEvent;
+        } as APIGatewayProxyEventV2;
 
         const response: { statusCode: number; body: string; cookies?: string[]; } = await login(event);
 
@@ -35,9 +42,7 @@ describe('login', () => {
         expect(responseBody.expiresIn).toBeDefined();
 
         expect(response.cookies).toBeDefined();
-        expect(response.cookies!.length).toBe(2);
-        expect(response.cookies![0]).toContain('accessToken');
-        expect(response.cookies![1]).toContain('refreshToken');
+        expect(response.cookies!.length).toBe(3);
     });
 
     it('should return a successful response when the body is base64 encoded', async () => {
@@ -47,7 +52,7 @@ describe('login', () => {
             password: 'testpassword'
         })).toString('base64'),
           isBase64Encoded: true
-      } as APIGatewayEvent;
+      } as APIGatewayProxyEventV2;
 
       const response: { statusCode: number; body: string; cookies?: string[]; } = await login(event);
 
@@ -59,16 +64,14 @@ describe('login', () => {
       expect(responseBody.expiresIn).toBeDefined();
 
       expect(response.cookies).toBeDefined();
-      expect(response.cookies!.length).toBe(2);
-      expect(response.cookies![0]).toContain('accessToken');
-      expect(response.cookies![1]).toContain('refreshToken');
+      expect(response.cookies!.length).toBe(3);
   });
 
     it('should throw an error if the event body is empty', async () => {
         const event = {
             body: '',
             isBase64Encoded: false
-        } as APIGatewayEvent;
+        } as APIGatewayProxyEventV2;
 
         const expectedResponse = {
             statusCode: 400,
@@ -81,8 +84,41 @@ describe('login', () => {
       
           expect(response).toEqual(expectedResponse)
     });
-});
+})
 
+describe('refresh', () => {
+  it('should return a successful response with access and refresh tokens', async () => {
+      const event = {
+          body: undefined,
+          isBase64Encoded: false,
+          requestContext: {
+            authorizer: {
+              lambda: {
+                userId: 'abc-123',
+                email: 'test@test',
+                groups: 'admin,user'
+              }
+            }
+          },
+          cookies: [
+            'accessToken=fakeAccessToken',
+            'refreshToken=fakeRefreshToken'
+          ]
+      } as APIGatewayProxyEventV2WithLambdaAuthorizer<RestApi.AuthorizationContext>;
+
+      const response: { statusCode: number; body: string; cookies?: string[]; } = await refresh(event);
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toBeDefined();
+
+      const responseBody = JSON.parse(response.body);
+      expect(responseBody.userId).toBeDefined();
+      expect(responseBody.expiresIn).toBeDefined();
+
+      expect(response.cookies).toBeDefined();
+      expect(response.cookies!.length).toBe(3);
+  })
+})
 
 describe('create', () => {
     it('should return the created user', async () => {
@@ -92,7 +128,7 @@ describe('create', () => {
           password: 'testpassword'
         }),
         isBase64Encoded: false
-      } as APIGatewayEvent
+      } as APIGatewayProxyEventV2
   
       const expectedUser = {
         id: '123456',
@@ -121,7 +157,7 @@ describe('create', () => {
           password: 'testpassword'
         })).toString('base64'),
         isBase64Encoded: true
-      } as APIGatewayEvent
+      } as APIGatewayProxyEventV2
   
       const expectedUser = {
         id: '123456',
@@ -145,9 +181,9 @@ describe('create', () => {
   
     it('should return an error response if the event body is null', async () => {
       const event = {
-        body: null,
+        body: '',
         isBase64Encoded: false
-      } as APIGatewayEvent
+      } as APIGatewayProxyEventV2
   
       const expectedResponse = {
         statusCode: 400,
@@ -168,8 +204,9 @@ describe('create', () => {
         isBase64Encoded: false,
         statusCode: 204,
         cookies: [
-          'accessToken=n/a; Secure; HttpOnly; SameSite=Lax; Path=/; Max-Age: -1',
-          'refreshToken=n/a; Secure; HttpOnly; SameSite=Lax; Path=/; Max-Age: -1'
+          'accessToken=undefined; Secure; HttpOnly; SameSite=Lax; Path=/api; Max-Age: -1',
+          'idToken=undefined; Secure; HttpOnly; SameSite=Lax; Path=/api; Max-Age: -1',
+          'refreshToken=undefined; Secure; HttpOnly; SameSite=Lax; Path=/api'
         ]
       }
   

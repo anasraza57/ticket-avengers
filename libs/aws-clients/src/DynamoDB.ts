@@ -9,6 +9,8 @@ import {
   TransactWriteCommand
 } from '@aws-sdk/lib-dynamodb'
 
+export * from '@aws-sdk/client-dynamodb'
+
 const MARSHALLING_OPTIONS = { removeUndefinedValues: true, convertEmptyValues: true }
 const client = new DynamoDBClient({ region: 'us-east-1', maxAttempts: 2 })
 const documentClient = DynamoDBDocumentClient.from(client, {

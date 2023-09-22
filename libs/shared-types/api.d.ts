@@ -16,6 +16,24 @@ export namespace RestApi {
             hasNextPage: boolean
         }
     }
+
+    type AuthorizationContext = {
+        userId: string
+        groups: string
+        phone: string
+        email: string
+        firstName: string
+        lastName: string
+    }
+
+    type Requester = {
+        userId: string
+        groups: string[]
+        phone: string
+        email: string
+        firstName: string
+        lastName: string
+    }
 }
 
 

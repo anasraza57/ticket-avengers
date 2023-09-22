@@ -7,7 +7,10 @@ export default {
     '^.+\\.[tj]s$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.spec.json' }],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coveragePathIgnorePatterns: ['serverless.ts', 'serverless.base.ts'],
+  moduleNameMapper: {
+    'lodash-es': 'lodash'
+  },
+  coveragePathIgnorePatterns: ['infrastructure.ts'],
   coverageDirectory: '../../coverage/apps/api',
   collectCoverageFrom: ['src/**/*.ts']
 };

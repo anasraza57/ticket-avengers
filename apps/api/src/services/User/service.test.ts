@@ -1,6 +1,7 @@
-import { generateAuthTokens, createUser } from './service'
+import { generateAuthTokens, createUser, refreshAuthToken } from './service'
 import ErrorCodes from '../../configuration/errorCodes'
 import * as DAL from './dataAccess'
+import { createTokenVerifier, CognitoClient } from '@driven-app/aws-clients/Cognito'
 
 // Mock the DAL functions
 jest.mock('./dataAccess', () => ({
@@ -17,13 +18,21 @@ jest.mock('@driven-app/aws-clients/Cognito', () => ({
             ExpiresIn: 3600,
             AccessToken: 'accessToken123',
             RefreshToken: 'refreshToken123',
-            IdToken: 'idToken123',
-            TokenType: 'Bearer'
+            IdToken: 'idToken123'
         }
         })
     },
-    AdminInitiateAuthCommand: jest.fn()
+    AdminInitiateAuthCommand: jest.fn(),
+    createTokenVerifier: jest.fn().mockReturnValue({
+        verify: jest.fn().mockResolvedValue({
+            sub: 'user123',
+            exp: 3600
+        })
+    })
 }))
+
+const mockedCreateTokenVerifier = jest.mocked(createTokenVerifier)
+const mockedCognitoClient = jest.mocked(CognitoClient)
 
 describe('generateAuthTokens', () => {
   it('should generate authentication tokens for a user with valid credentials', async () => {
@@ -40,8 +49,7 @@ describe('generateAuthTokens', () => {
       expiresIn: 3600,
       accessToken: 'accessToken123',
       refreshToken: 'refreshToken123',
-      idToken: 'idToken123',
-      tokenType: 'Bearer'
+      idToken: 'idToken123'
     })
   })
 
@@ -79,6 +87,79 @@ describe('generateAuthTokens', () => {
         expect(error).toEqual(ErrorCodes.USER.MISSING_EMAIL_OR_PHONE)
     }
   })
+})
+
+describe('refreshAuthToken', () => {
+    it('should return a set of new tokens if the access token is expired', async () => {
+        // @ts-ignore: this is a mock
+        mockedCreateTokenVerifier.mockReturnValueOnce({
+            verify: jest.fn().mockResolvedValue({
+                username: 'user123',
+                exp: 2
+            })
+        })
+
+        const tokens = {
+            ExpiresIn: 3600,
+            AccessToken: 'accessToken123',
+            RefreshToken: 'refreshToken123',
+            IdToken: 'idToken123'
+        }
+
+        mockedCognitoClient.send.mockImplementationOnce(() => {
+            return {
+                AuthenticationResult: tokens
+            }
+        })
+
+        const result = await refreshAuthToken({
+            tokens: {
+                accessToken: 'someFakeAccessToken',
+                refreshToken: 'someFakeRefreshToken',
+                idToken: 'someFakeIdToken'
+            }
+        })
+
+        const expected = {
+            expiresIn: 3600,
+            accessToken: 'accessToken123',
+            refreshToken: 'refreshToken123',
+            idToken: 'idToken123',
+            userId: 'user123'
+        }
+
+        expect(result).toEqual(expected)
+    })
+
+    it('should return the same tokens if the access token is NOT expired', async () => {
+        const now = Date.now()
+
+        // @ts-ignore: this is a mock
+        mockedCreateTokenVerifier.mockReturnValueOnce({
+            verify: jest.fn().mockResolvedValue({
+                username: 'user123',
+                exp: (now / 1000) + 500
+            })
+        })
+
+        const result = await refreshAuthToken({
+            tokens: {
+                accessToken: 'someFakeAccessToken',
+                refreshToken: 'someFakeRefreshToken',
+                idToken: 'someFakeIdToken'
+            }
+        })
+
+        const expected = {
+            accessToken: 'someFakeAccessToken',
+            refreshToken: 'someFakeRefreshToken',
+            idToken: 'someFakeIdToken',
+            userId: 'user123',
+            expiresIn: expect.any(Number)
+        }
+
+        expect(result).toEqual(expected)
+    })
 })
 
 describe('createUser', () => {

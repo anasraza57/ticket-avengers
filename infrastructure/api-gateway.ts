@@ -1,6 +1,10 @@
-import { StackContext, Api, Function } from 'sst/constructs'
+import { StackContext, Api, Function, use } from 'sst/constructs'
+import { AuthCognito } from './cognito'
 
 export function API({ stack }: StackContext) {
+
+    const { cognito } = use(AuthCognito)
+
     const api = new Api(stack, 'HttpApi', {
         cors: {
             allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -10,13 +14,19 @@ export function API({ stack }: StackContext) {
         authorizers: {
             cookieAuthorizer: {
                 type: 'lambda',
-                resultsCacheTtl: '15 minutes',
+                resultsCacheTtl: '10 minutes',
                 responseTypes: ['simple'],
                 identitySource: ['$request.header.Cookie'],
                 name: 'cookieAuthorizer',
                 function: new Function(stack, 'CookieAuthorizer', {
                     handler: './infrastructure/api-authorizers.cookieAuthorizer',
-                    description: 'Authorizer for cookie-based authentication'
+                    description: 'Authorizer for cookie-based authentication',
+                    environment: {
+                        userPoolId: cognito.userPoolId,
+                        userPoolArn: cognito.userPoolArn,
+                        userPoolClientId: cognito.userPoolClientId
+                    },
+                    permissions: []
                 })
             }
         },

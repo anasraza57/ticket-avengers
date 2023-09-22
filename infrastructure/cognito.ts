@@ -8,6 +8,11 @@ export function AuthCognito({ stack }: StackContext) {
     const cognito = new Cognito(stack, 'AuthCognito', {
         login: ['email', 'phone', 'username'],
         cdk: {
+            userPoolClient: {
+                authFlows: {
+                    adminUserPassword: true
+                },
+            },
             userPool: {
                 accountRecovery: aws_cognito.AccountRecovery.EMAIL_ONLY,
                 autoVerify: { email: true, phone: true },

@@ -1,19 +1,22 @@
-import { DynamoDB } from '@driven-app/aws-clients/DynamoDB'
+import { DynamoDB, TransactionCanceledException } from '@driven-app/aws-clients/DynamoDB'
 import { 
     CognitoClient, 
     AdminCreateUserCommand, 
     AdminSetUserPasswordCommand, 
     AdminAddUserToGroupCommand,
     AdminDeleteUserCommand,
-    AdminDisableUserCommand
+    AdminDisableUserCommand,
+    InvalidPasswordException,
+    UsernameExistsException
  } from '@driven-app/aws-clients/Cognito'
 import { camelCase } from 'lodash-es'
 import { v4 as uuid } from 'uuid'
 import { environment } from '../../configuration/environment'
 import errorCodes from '../../configuration/errorCodes'
 
-const DYNAMODB_TABLE_NAME = 'Users'
-const ID_PREFIX = camelCase(DYNAMODB_TABLE_NAME)
+const DYNAMODB_TABLE_NAME_BASE = 'Users'
+const DYNAMODB_TABLE_NAME = environment.dynamodb.tableNamePrefix ? `${environment.dynamodb.tableNamePrefix}-${DYNAMODB_TABLE_NAME_BASE}`  : DYNAMODB_TABLE_NAME_BASE
+const ID_PREFIX = camelCase(DYNAMODB_TABLE_NAME_BASE)
 
 type CreateInput = {
     email: string
@@ -140,12 +143,12 @@ export async function create(input: CreateInput) {
         console.error(`Failed to create user`)
         console.error(err)
 
-        if (err?.__type === 'InvalidPasswordException') {
+        if (err instanceof InvalidPasswordException) {
             // clean up DynamoDB records if Cognito fails
             await remove(newUserRecord.id)
 
             throw errorCodes.USER.INVALID_PASSWORD
-        } else if (err?.__type === 'UsernameExistsException' || err?.__type.includes('TransactionCanceledException')) {
+        } else if (err instanceof UsernameExistsException || err instanceof TransactionCanceledException) {
             throw errorCodes.USER.PHONE_OR_EMAIL_ALREADY_EXISTS
         } else {
             throw err

@@ -13,6 +13,7 @@ export function UserApiRoutes({ stack }: StackContext) {
 
     api.addRoutes(stack, {
         'POST /users': {
+            authorizer: 'none',
             function: {
                 handler: `${fullPathToHandler}.create`,
                 environment: {
@@ -31,6 +32,7 @@ export function UserApiRoutes({ stack }: StackContext) {
             }
         },
         'POST /users/login': {
+            authorizer: 'none',
             function: {
                 handler: `${fullPathToHandler}.login`,
                 environment: {
@@ -48,7 +50,30 @@ export function UserApiRoutes({ stack }: StackContext) {
                 ]
             }
         },
-        'DELETE /users/logout': `${fullPathToHandler}.logout`
+        'PUT /users/login': {
+            function: {
+                handler: `${fullPathToHandler}.refresh`,
+                environment: {
+                    cognitoUserPoolId: cognito.userPoolId,
+                    cognitoUserPoolArn: cognito.userPoolArn,
+                    cognitoUserPoolClientId: cognito.userPoolClientId
+                },
+                permissions: [
+                    userTable,
+                    new iam.PolicyStatement({
+                        actions: ['cognito-idp:AdminInitiateAuth'],
+                        resources: [cognito.userPoolArn],
+                        effect: iam.Effect.ALLOW
+                    }) as unknown as Permissions[0]
+                ]
+            }
+        },
+        'DELETE /users/login': {
+            authorizer: 'none',
+            function: {
+                handler: `${fullPathToHandler}.logout`
+            }
+        }
     })
 }
 
@@ -61,7 +86,7 @@ export function UserTable({ stack }: StackContext) {
         globalIndexes: {},
         cdk: {
             table: {
-                tableName: 'Users',
+                tableName: `${stack.stage}-Users`,
                 // removalPolicy: RemovalPolicy.SNAPSHOT
                 removalPolicy: RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE
             }

@@ -1,9 +1,11 @@
-import { APIGatewayEvent } from 'aws-lambda'
+import { APIGatewayProxyEventV2, APIGatewayProxyEventV2WithLambdaAuthorizer } from 'aws-lambda'
 import { RestApi } from '@driven-app/shared-types/api'
 import * as Service from './service'
 import httpErrorHandler from '../../utilities/httpErrorHandler'
+import formatAuthCookies from '../../utilities/formatAuthCookies'
+import getRequesterFromEvent from '../../utilities/getRequesterFromEvent'
 
-export async function login(event: APIGatewayEvent) {
+export async function login(event: APIGatewayProxyEventV2) {
     if (!event.body) {
         return {
                statusCode: 400,
@@ -32,11 +34,42 @@ export async function login(event: APIGatewayEvent) {
         return {
             statusCode: 200,
             body: JSON.stringify(responseBody),
-            cookies: [
-                // The Set-Cookie header tells the browser to persist the access token in the cookie store
-                `accessToken=${userAuth.accessToken}; Secure; HttpOnly; SameSite=Lax; Path=/; Max-Age: ${userAuth.expiresIn}`,
-                `refreshToken=${userAuth.refreshToken}; Secure; HttpOnly; SameSite=Lax; Path=/;` // TODO: set max-age based on Cognito config
-            ]
+            // The Set-Cookie header tells the browser to persist the access token in the cookie store
+            cookies: formatAuthCookies(userAuth)
+        }
+    } catch (error) {
+        return httpErrorHandler(error)
+    }
+}
+
+export async function refresh(event: APIGatewayProxyEventV2WithLambdaAuthorizer<RestApi.AuthorizationContext>) {
+
+    const refreshToken = event.cookies?.find(cookie => cookie.startsWith('refreshToken'))?.split('=')[1] || ''
+    const accessToken = event.cookies?.find(cookie => cookie.startsWith('accessToken'))?.split('=')[1] || ''
+    const idToken = event.cookies?.find(cookie => cookie.startsWith('idToken'))?.split('=')[1] || ''
+    
+    const requester = getRequesterFromEvent(event)
+
+    try {
+        const userAuth = await Service.refreshAuthToken({
+            tokens: {
+                refreshToken: refreshToken,
+                accessToken: accessToken,
+                idToken: idToken
+            },
+            requester: requester
+        })
+
+        const responseBody: RestApi.User.LoginResponse = {
+            userId: userAuth.userId,
+            expiresIn: userAuth.expiresIn
+        }
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify(responseBody),
+            // The Set-Cookie header tells the browser to persist the access token in the cookie store
+            cookies: formatAuthCookies(userAuth)
         }
     } catch (error) {
         return httpErrorHandler(error)
@@ -47,15 +80,12 @@ export async function logout() {
     return {
         isBase64Encoded: false,
         statusCode: 204,
-        cookies: [
-            // setting the max-age to -1 will tell the browser to delete the cookie
-            `accessToken=n/a; Secure; HttpOnly; SameSite=Lax; Path=/; Max-Age: -1`,
-            `refreshToken=n/a; Secure; HttpOnly; SameSite=Lax; Path=/; Max-Age: -1`
-        ]
+        // The Set-Cookie header tells the browser to persist the access token in the cookie store
+        cookies: formatAuthCookies({ expiresIn: -1 })
     }
 }
 
-export async function create(event: APIGatewayEvent) {
+export async function create(event: APIGatewayProxyEventV2) {
     if (!event.body) {
         if (!event.body) {
             return {
