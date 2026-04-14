@@ -1,0 +1,21 @@
+.circle {
+  min-width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #4982fc;
+  box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  color: white;
+  font-size: 33px;
+  font-weight: 700;
+  margin: 0 15px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  padding: 20px 0;
+}

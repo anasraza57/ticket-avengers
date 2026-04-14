@@ -1,0 +1,25 @@
+###
+# This GitHub Workflow will deploy the application to the QA environment any time a change is made
+# to the `main` branch or a PR is merged into `main`.
+###
+name: Deploy QA
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Reason for manual trigger'
+        required: true
+        default: 'Re-run past failed build'
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy
+    uses: ./.github/workflows/_deploy.yml
+    with:
+      env_name: qa
+    secrets:
+      aws_account_id: ${{ secrets.QA_AWS_ACCOUNT_ID }}

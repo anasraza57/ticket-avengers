@@ -1,0 +1,25 @@
+###
+# This GitHub Workflow will deploy the application to the Production environment anytime a git tag is created
+# that has a name that starts with "prod-".
+###
+name: Deploy Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Reason for manual trigger'
+        required: true
+        default: 'Re-run past failed build'
+  push:
+    tags:
+      - prod-**
+
+jobs:
+  deploy:
+    name: Deploy
+    uses: ./.github/workflows/_deploy.yml
+    with:
+      env_name: prod
+    secrets:
+      aws_account_id: ${{ secrets.PROD_AWS_ACCOUNT_ID }}
